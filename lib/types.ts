@@ -1,6 +1,6 @@
 import { InterfaceType, TypeOf, OutputOf, Mixed, Props } from "io-ts";
 
-export interface PropFromString {
+export interface Schema {
   position: [number, number];
   codec: Mixed;
 }
@@ -10,7 +10,7 @@ export interface TypeDefinition {
   typeProps: Props;
 }
 
-export type PropsFromString = Record<string, PropFromString>;
+export type PropsFromString = Record<string, Schema>;
 
 export type TypeCFromString<P extends PropsFromString> = InterfaceType<
   P,
@@ -26,4 +26,4 @@ export type CodecTypeCFromString<P extends PropsFromString> = InterfaceType<
   unknown
 >;
 
-export type FromStringSchema = Record<string, PropFromString["position"]>;
+export type FromStringSchema = Record<string, Schema["position"]>;
