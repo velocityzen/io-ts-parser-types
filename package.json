@@ -1,6 +1,6 @@
 {
   "name": "io-ts-parser-types",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "io-ts types for making parsers",
   "main": "build/index.js",
   "types": "build/lib/index.d.ts",
