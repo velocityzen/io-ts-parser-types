@@ -4,7 +4,7 @@ import { reduce } from "fp-ts/Array";
 import { pipe } from "fp-ts/function";
 import { toEntries } from "fp-ts/Record";
 
-import * as t from "io-ts";
+import { Type, UnknownRecord, string } from "io-ts";
 
 import { FromStringSchema } from "./types";
 
@@ -12,7 +12,7 @@ import { FromStringSchema } from "./types";
  * returns value if succeed and undefined otherwise
  **/
 export function decode<I, O>(
-  codec: t.Type<I, O, unknown>,
+  codec: Type<I, O, unknown>,
   value: unknown
 ): undefined | I {
   const v = codec.decode(value);
@@ -58,4 +58,41 @@ export function toString(
       return str.substring(0, position[0]) + value + str.substring(position[1]);
     })
   );
+}
+
+function mergeStrings(first: string, second: string): string {
+  return Array.from(second)
+    .reduce((res, letter, index) => {
+      if (!res[index] || res[index] === " ") {
+        res[index] = letter;
+      }
+
+      return res;
+    }, Array.from(first))
+    .join("");
+}
+
+export function mergeAll<A, B>(first: A, second: B): B | (A & B) {
+  if ((first as unknown) === (second as unknown)) {
+    return second;
+  }
+
+  const isSecondPrimitive = !UnknownRecord.is(second);
+  if (isSecondPrimitive) {
+    if (string.is(first) && string.is(second)) {
+      return mergeStrings(first, second) as unknown as B; // B is a string obviously
+    }
+
+    return second;
+  }
+
+  const isFirstPrimitive = !UnknownRecord.is(first);
+  if (isFirstPrimitive) {
+    return second;
+  }
+
+  return {
+    ...first,
+    ...second,
+  };
 }

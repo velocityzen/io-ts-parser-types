@@ -1,4 +1,4 @@
 export * from "./types";
-export * from "./helpers";
 export * from "./typeFromString";
 export * from "./codecTypeFromString";
+export * from "./matchPartial";
