@@ -22,7 +22,8 @@ export class MatchPartialType<A, O = A, I = unknown> extends Type<A, O, I> {
         Chain.chain(match.validate(u, c), (a) => {
           const index = this.cases.findIndex((c) => c.is(a));
           if (index === -1) {
-            return failure(u, c, "does not match any case");
+            const errorContext = appendContext(c, "match", match, a);
+            return failure(u, errorContext, "does not match any case");
           }
 
           const codec = this.matches[index];
