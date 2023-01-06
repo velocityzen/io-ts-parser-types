@@ -49,7 +49,7 @@ export function toString(
     reduce("", (str, [name, position]) => {
       const maxLength = position[1] - position[0];
       const value = pipe(
-        props[name],
+        String(props[name]),
         slice(0, maxLength),
         padLeft(maxLength, " ")
       );
