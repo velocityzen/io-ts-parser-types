@@ -8,23 +8,23 @@ import { TypeDefinition, PropsFromString, CodecTypeCFromString } from "./types";
 import { fromString, toString } from "./helpers";
 
 export function codecTypeFromString<P extends PropsFromString>(
-  props: P,
+  propsSchema: P,
   name: string
 ): CodecTypeCFromString<P> {
-  const { schema, typeProps } = pipe(
-    props,
+  const { schema, props } = pipe(
+    propsSchema,
     toEntries,
     reduce(
-      { schema: {}, typeProps: {} } as TypeDefinition,
+      { schema: {}, props: {} } as TypeDefinition,
       (defs, [key, { position, codec }]) => {
         defs.schema[key] = position;
-        defs.typeProps[key] = codec;
+        defs.props[key] = codec;
         return defs;
       }
     )
   );
 
-  const typeCodec = type(typeProps);
+  const typeCodec = type(props);
   const result = new InterfaceType(
     name,
     typeCodec.is,
@@ -37,7 +37,7 @@ export function codecTypeFromString<P extends PropsFromString>(
       const props = typeCodec.encode(o);
       return toString(props, schema);
     },
-    type
+    props
   );
 
   // typescript type inheretance got confused

@@ -1,9 +1,10 @@
-import { TypeOf, OutputOf, type, literal } from "io-ts";
+import { TypeOf, OutputOf, InputOf, type, literal } from "io-ts";
 import { NumberFromString, BooleanFromString } from "io-ts-types";
 import { Equal, Expect } from "@type-challenges/utils";
 
 import { decode } from "../lib/helpers";
-import { matchPartial, codecTypeFromString } from "../lib";
+import { codecTypeFromString } from "../lib";
+import { matchPartial } from "../lib/matchPartial_";
 
 const match = codecTypeFromString(
   {
@@ -43,21 +44,10 @@ const case2Codec = codecTypeFromString(
   "Case2"
 );
 
-const codec = matchPartial(match)
-  .case(case1, case1Codec)
-  .case(case2, case2Codec);
-
-type IMatch = TypeOf<typeof match>;
-type _Case1 = IMatch & TypeOf<typeof case1Codec>;
-type _Case2 = IMatch & TypeOf<typeof case2Codec>;
-type I = TypeOf<typeof codec>;
-type O = OutputOf<typeof codec>;
-type _Tests = [
-  // ideally we want this:
-  // Expect<Equal<I, Case1 | Case2>>,
-  Expect<Equal<I, IMatch>>,
-  Expect<Equal<O, string>>
-];
+const codec = matchPartial(match, [
+  [case1, case1Codec],
+  [case2, case2Codec],
+]);
 
 describe("matchPartial", () => {
   test("decode", () => {
@@ -76,7 +66,33 @@ describe("matchPartial", () => {
       codec.encode({
         case: 2,
         value: true,
-      } as I)
+      })
     ).toEqual("2    true");
+  });
+
+  test("types", () => {
+    type MA = TypeOf<typeof match>;
+    type MO = OutputOf<typeof match>;
+    type MI = InputOf<typeof match>;
+
+    type C1A = TypeOf<typeof case1Codec>;
+    type C1O = OutputOf<typeof case1Codec>;
+    type C1I = InputOf<typeof case1Codec>;
+
+    type C2A = TypeOf<typeof case2Codec>;
+    type C2O = OutputOf<typeof case2Codec>;
+    type C2I = InputOf<typeof case2Codec>;
+
+    type A = TypeOf<typeof codec>;
+    type O = OutputOf<typeof codec>;
+    type I = InputOf<typeof codec>;
+
+    type _Tests = [
+      Expect<Equal<A, MA & (C1A | C2A)>>,
+      Expect<Equal<O, MO & (C1O | C2O)>>,
+      Expect<Equal<I, MI & (C1I | C2I)>>
+    ];
+
+    expect(true).toBe(true);
   });
 });
