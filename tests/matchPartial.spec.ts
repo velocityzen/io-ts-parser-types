@@ -3,8 +3,7 @@ import { NumberFromString, BooleanFromString } from "io-ts-types";
 import { Equal, Expect } from "@type-challenges/utils";
 
 import { decode } from "../lib/helpers";
-import { codecTypeFromString } from "../lib";
-import { matchPartial } from "../lib/matchPartial_";
+import { matchPartial, codecTypeFromString } from "../lib";
 
 const match = codecTypeFromString(
   {
