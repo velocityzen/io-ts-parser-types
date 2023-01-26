@@ -23,8 +23,10 @@ export function decode<I, O>(
   return v.right;
 }
 
-function padLeft(maxLength: number, fillString = " ") {
-  return (str: string) => str.padEnd(maxLength, fillString);
+function pad(maxLength: number, fillString = " ", end: boolean) {
+  return end
+    ? (str: string) => str.padStart(maxLength, fillString)
+    : (str: string) => str.padEnd(maxLength, fillString);
 }
 
 export function fromString(str: string, schema: FromStringSchema): unknown {
@@ -47,15 +49,18 @@ export function toString(
     schema,
     toEntries,
     reduce("", (str, [name, position]) => {
+      const value = props[name] ?? "";
       const maxLength = position[1] - position[0];
-      const value = pipe(
-        String(props[name]),
+      const valueString = pipe(
+        String(value),
         slice(0, maxLength),
-        padLeft(maxLength, " ")
+        pad(maxLength, " ", typeof value === "number")
       );
 
       str = str.padEnd(position[0], " ");
-      return str.substring(0, position[0]) + value + str.substring(position[1]);
+      return (
+        str.substring(0, position[0]) + valueString + str.substring(position[1])
+      );
     })
   );
 }
