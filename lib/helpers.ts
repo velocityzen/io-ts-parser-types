@@ -13,7 +13,7 @@ import { FromStringSchema } from "./types";
  **/
 export function decode<I, O>(
   codec: Type<I, O, unknown>,
-  value: unknown
+  value: unknown,
 ): undefined | I {
   const v = codec.decode(value);
   if (isLeft(v)) {
@@ -37,13 +37,13 @@ export function fromString(str: string, schema: FromStringSchema): unknown {
       const fieldValue = str.substring(position[0], position[1]);
       record[name] = fieldValue.trim();
       return record;
-    })
+    }),
   );
 }
 
 export function toString(
   props: Record<string, string>,
-  schema: FromStringSchema
+  schema: FromStringSchema,
 ): string {
   return pipe(
     schema,
@@ -54,14 +54,14 @@ export function toString(
       const valueString = pipe(
         String(value),
         slice(0, maxLength),
-        pad(maxLength, " ", typeof value === "number")
+        pad(maxLength, " ", typeof value === "number"),
       );
 
       str = str.padEnd(position[0], " ");
       return (
         str.substring(0, position[0]) + valueString + str.substring(position[1])
       );
-    })
+    }),
   );
 }
 

@@ -9,7 +9,7 @@ import { fromString, toString } from "./helpers";
 
 export function codecTypeFromString<P extends PropsFromString>(
   propsSchema: P,
-  name: string
+  name: string,
 ): CodecTypeCFromString<P> {
   const { schema, props } = pipe(
     propsSchema,
@@ -20,8 +20,8 @@ export function codecTypeFromString<P extends PropsFromString>(
         defs.schema[key] = position;
         defs.props[key] = codec;
         return defs;
-      }
-    )
+      },
+    ),
   );
 
   const typeCodec = type(props);
@@ -37,7 +37,7 @@ export function codecTypeFromString<P extends PropsFromString>(
       const props = typeCodec.encode(o);
       return toString(props, schema);
     },
-    props
+    props,
   );
 
   // typescript type inheretance got confused

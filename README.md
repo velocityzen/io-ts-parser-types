@@ -13,6 +13,28 @@ io-ts codec types for parsing data
 
 # Usage
 
+## typeFromRegexp(regexp, codec)
+
+returns a codec that matches string with regexp and the validates all named capture groups with codec.
+
+### Example
+
+```ts
+const dataCodec = t.type({
+  prop: NumberFromString,
+  value: BooleanFromString,
+});
+
+const codec = typeFromRegexp(/p(?<prop>\d+)\/v(?<value>.+)/, dataCodec);
+expect(decode(codec, "p123/vtrue")).toEqual({
+  prop: 123,
+  value: true,
+});
+
+```
+
+---
+
 Both codecs accept the same parameters `schema` and `name`. The `name` is just a codec name. for Schema look for example
 
 ## typeFromString(schema, name)
@@ -23,7 +45,7 @@ returns a codec that extracts fields for the position in the string and returns 
 
 returns a codec that extracts fields for the position in the string and returns an object. **encode returns the string with field values in respective positions**
 
-## Example
+### Example
 
 ```ts
 const schema = {

@@ -14,11 +14,11 @@ export function matchPartial<
   P extends Array<[Mixed, Mixed]>,
   A,
   O = A,
-  I = unknown
+  I = unknown,
 >(
   match: Type<A, O, I>,
   cases: P,
-  name = `MatchPartial<${match.name}>`
+  name = `MatchPartial<${match.name}>`,
 ): MatchPartialC<P, A, O, I> {
   const { caseCodecs, matchCodecs } = cases.reduce<TypeDefinition>(
     (defs, [c, m]) => {
@@ -26,7 +26,7 @@ export function matchPartial<
       defs.matchCodecs.push(m);
       return defs;
     },
-    { caseCodecs: [], matchCodecs: [] }
+    { caseCodecs: [], matchCodecs: [] },
   );
 
   const codec = new Type<A, O, I>(
@@ -50,7 +50,7 @@ export function matchPartial<
         const codec = matchCodecs[index];
         const context = appendContext(c, String(index), codec, u);
         return Chain.chain(codec.validate(u, context), (o) =>
-          success(mergeAll(a, o))
+          success(mergeAll(a, o)),
         );
       }),
 
@@ -63,7 +63,7 @@ export function matchPartial<
       const codec = matchCodecs[index];
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return mergeAll(match.encode(o), codec.encode(o));
-    }
+    },
   );
 
   return codec as MatchPartialC<P, A, O, I>;

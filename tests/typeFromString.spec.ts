@@ -18,7 +18,7 @@ describe("typeFromString", () => {
           codec: BooleanFromString,
         },
       },
-      "TestCodec"
+      "TestCodec",
     );
 
     expect(decode(codec, "12345true78")).toEqual({
@@ -39,14 +39,14 @@ describe("typeFromString", () => {
           codec: BooleanFromString,
         },
       },
-      "TestCodec"
+      "TestCodec",
     );
 
     expect(
       codec.encode({
         prop1: 2,
         prop2: true,
-      })
+      }),
     ).toEqual({
       prop1: "2",
       prop2: "true",
@@ -69,7 +69,7 @@ describe("typeFromString", () => {
         prop1,
         prop2,
       },
-      "TestCodec"
+      "TestCodec",
     );
 
     type I = TypeOf<typeof codec>;
@@ -77,7 +77,7 @@ describe("typeFromString", () => {
 
     type _Tests = [
       Expect<Equal<I, { prop1: number; prop2: boolean }>>,
-      Expect<Equal<O, { prop1: string; prop2: string }>>
+      Expect<Equal<O, { prop1: string; prop2: string }>>,
     ];
 
     expect(true).toBe(true);

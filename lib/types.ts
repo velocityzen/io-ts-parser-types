@@ -50,7 +50,7 @@ export type MatchPartialC<
   P extends Array<[Mixed, Mixed]>,
   A,
   O = A,
-  I = unknown
+  I = unknown,
 > = P extends { lenght: 1 }
   ? Type<A & TypeOf<P[0][1]>, O & OutputOf<P[0][1]>, I & InputOf<P[0][1]>>
   : P extends { lenght: 2 }

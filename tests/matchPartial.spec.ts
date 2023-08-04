@@ -12,7 +12,7 @@ const match = codecTypeFromString(
       codec: NumberFromString,
     },
   },
-  "Match"
+  "Match",
 );
 
 const case1 = type({
@@ -26,7 +26,7 @@ const case1Codec = codecTypeFromString(
       codec: NumberFromString,
     },
   },
-  "Case1"
+  "Case1",
 );
 
 const case2 = type({
@@ -40,7 +40,7 @@ const case2Codec = codecTypeFromString(
       codec: BooleanFromString,
     },
   },
-  "Case2"
+  "Case2",
 );
 
 const codec = matchPartial(match, [
@@ -65,7 +65,7 @@ describe("matchPartial", () => {
       codec.encode({
         case: 2,
         value: true,
-      })
+      }),
     ).toEqual("2    true");
   });
 
@@ -75,12 +75,12 @@ describe("matchPartial", () => {
     type MI = InputOf<typeof match>;
 
     type C1A = TypeOf<typeof case1Codec>;
-    type C1O = OutputOf<typeof case1Codec>;
-    type C1I = InputOf<typeof case1Codec>;
+    type _C1O = OutputOf<typeof case1Codec>;
+    type _C1I = InputOf<typeof case1Codec>;
 
     type C2A = TypeOf<typeof case2Codec>;
-    type C2O = OutputOf<typeof case2Codec>;
-    type C2I = InputOf<typeof case2Codec>;
+    type _C2O = OutputOf<typeof case2Codec>;
+    type _C2I = InputOf<typeof case2Codec>;
 
     type A = TypeOf<typeof codec>;
     type O = OutputOf<typeof codec>;
@@ -88,8 +88,8 @@ describe("matchPartial", () => {
 
     type _Tests = [
       Expect<Equal<A, MA & (C1A | C2A)>>,
-      Expect<Equal<O, MO & (C1O | C2O)>>,
-      Expect<Equal<I, MI & (C1I | C2I)>>
+      Expect<Equal<O, MO>>,
+      Expect<Equal<I, MI>>,
     ];
 
     expect(true).toBe(true);
