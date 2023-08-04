@@ -35,7 +35,7 @@ expect(decode(codec, "p123/vtrue")).toEqual({
 
 ---
 
-Both codecs accept the same parameters `schema` and `name`. The `name` is just a codec name. for Schema look for example
+Both following codecs accept the same parameters `schema` and `name`. The `name` is just a codec name. for Schema look for example
 
 ## typeFromString(schema, name)
 
