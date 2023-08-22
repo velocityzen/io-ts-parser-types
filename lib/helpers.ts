@@ -35,7 +35,7 @@ export function fromString(str: string, schema: FromStringSchema): unknown {
     toEntries,
     reduce({} as Record<string, string>, (record, [name, position]) => {
       const fieldValue = str.substring(position[0], position[1]);
-      record[name] = fieldValue.trim();
+      record[name] = fieldValue;
       return record;
     }),
   );
