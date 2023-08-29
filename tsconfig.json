@@ -26,11 +26,6 @@
     ],
     "declarationDir": "./build"
   },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "commonjs"
-    }
-  },
   "include": [
     "rollup.config.ts",
     "types/**/*",

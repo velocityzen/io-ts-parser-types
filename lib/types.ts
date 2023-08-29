@@ -10,15 +10,10 @@ import {
 
 type Position = number[];
 
-export interface PropSchema<A, O, I> {
-  position: Position;
-  codec: Type<A, O, I>;
-}
+export type FromStringSchema<P> = Record<keyof P, Position>;
 
-export type FromStringSchema = Record<string, Position>;
-
-export interface TypeDefinition {
-  schema: FromStringSchema;
+export interface TypeDefinition<P> {
+  schema: FromStringSchema<P>;
   props: Props;
 }
 
@@ -35,14 +30,14 @@ export type TypeCFromString<P extends PropsFromString> = InterfaceType<
   { [K in keyof P]: TypeOf<P[K]["codec"]> },
   { [K in keyof P]: OutputOf<P[K]["codec"]> },
   unknown
->;
+> & { readonly schema: FromStringSchema<P> };
 
 export type CodecTypeCFromString<P extends PropsFromString> = InterfaceType<
   P,
   { [K in keyof P]: TypeOf<P[K]["codec"]> },
   string,
   unknown
->;
+> & { readonly schema: FromStringSchema<P> };
 
 // matchPartial
 

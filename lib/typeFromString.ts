@@ -15,9 +15,9 @@ export function typeFromString<P extends PropsFromString>(
     propsSchema,
     toEntries,
     reduce(
-      { schema: {}, props: {} } as TypeDefinition,
+      { schema: {}, props: {} } as TypeDefinition<P>,
       (defs, [key, { position, codec }]) => {
-        defs.schema[key] = position;
+        defs.schema[key as keyof P] = position;
         defs.props[key] = codec;
         return defs;
       },
@@ -25,7 +25,7 @@ export function typeFromString<P extends PropsFromString>(
   );
 
   const typeCodec = type(props);
-  const result = new InterfaceType(
+  const interfaceType = new InterfaceType(
     name,
     typeCodec.is,
     (u, c) =>
@@ -38,5 +38,12 @@ export function typeFromString<P extends PropsFromString>(
   );
 
   // typescript type inheretance got confused
-  return result as unknown as TypeCFromString<P>;
+  const codec = interfaceType as unknown as TypeCFromString<P>;
+  // keep schema for loging and debugging
+  Object.defineProperty(codec, "schema", {
+    value: schema,
+    writable: false,
+  });
+
+  return codec;
 }

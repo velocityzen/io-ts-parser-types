@@ -29,7 +29,10 @@ function pad(maxLength: number, fillString = " ", end: boolean) {
     : (str: string) => str.padEnd(maxLength, fillString);
 }
 
-export function fromString(str: string, schema: FromStringSchema): unknown {
+export function fromString<P>(
+  str: string,
+  schema: FromStringSchema<P>,
+): unknown {
   return pipe(
     schema,
     toEntries,
@@ -41,9 +44,9 @@ export function fromString(str: string, schema: FromStringSchema): unknown {
   );
 }
 
-export function toString(
+export function toString<P>(
   props: Record<string, string>,
-  schema: FromStringSchema,
+  schema: FromStringSchema<P>,
 ): string {
   return pipe(
     schema,
