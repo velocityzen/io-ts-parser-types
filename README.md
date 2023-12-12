@@ -76,6 +76,36 @@ expect(typeC.encode(result)).toEqual({
 expect(codecTypeC.encode(result)).toEqual(" 2   true");
 ```
 
+---
+
+## Number
+
+- **integerFrom(options)** - generic codec creation function for integer values
+- **floatFrom(options)** - generic codec creation function for float values
+  - regexp - optional, RegExp, matches string and returns **first** group as a number, ignores commas as a thousand separator
+  - name - optional, name of the codec
+- **ZeroFromNull** - returns `0` for `null`
+- **DecimalFromPercentString** - returns a percent value from string like e.g., 58% -> 0.58
+
+## Boolean
+
+- **booleanFrom(options)** - generic boolean codec creator function.
+  - **true** - true value, **false** - false value
+  - **true** - true value, strict - optional, boolean, if set to true only true value matches
+  - **false** - false value, strict - optional, boolean, if set to true only false value matches
+
+## Null
+
+- **nullFrom(options)** - generic null codec creator function
+  - **match** - array of values to be valid as `null`
+  - caseSensitive - optional, default true, matches values from `match` exactly. If you want to treat strings from the `match` array as non case-sensitive set them to `false`
+
+
+## String
+
+- **TrimmedString** - validates that value is a string and trims white space.
+
+
 License
 
 [MIT](LICENSE)
