@@ -1,6 +1,6 @@
 {
   "name": "io-ts-parser-types",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "io-ts types for making parsers",
   "main": "build/index.js",
   "types": "build/lib/index.d.ts",
@@ -15,7 +15,13 @@
     "test:coverage": "NODE_ENV=test jest --verbose --coverage",
     "test:watch": "NODE_ENV=test jest --verbose --watchAll"
   },
-  "keywords": ["codec", "io-ts", "typescript", "types", "parser"],
+  "keywords": [
+    "codec",
+    "io-ts",
+    "typescript",
+    "types",
+    "parser"
+  ],
   "author": "Alexey Novikov <v@2dubs.com>",
   "license": "MIT",
   "peerDependencies": {
