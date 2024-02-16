@@ -15,13 +15,16 @@
     "test:coverage": "NODE_ENV=test jest --verbose --coverage",
     "test:watch": "NODE_ENV=test jest --verbose --watchAll"
   },
-  "keywords": [
-    "codec",
-    "io-ts",
-    "typescript",
-    "types",
-    "parser"
-  ],
+  "keywords": ["codec", "io-ts", "typescript", "types", "parser"],
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velocityzen/io-ts-parser-types.git"
+  },
+  "bugs": {
+    "url": "https://github.com/velocityzen/io-ts-parser-types/issues"
+  },
+  "homepage": "https://github.com/velocityzen/io-ts-parser-types#readme",
   "author": "Alexey Novikov <v@2dubs.com>",
   "license": "MIT",
   "peerDependencies": {
