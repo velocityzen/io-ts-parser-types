@@ -15,8 +15,13 @@
     "test:coverage": "NODE_ENV=test jest --verbose --coverage",
     "test:watch": "NODE_ENV=test jest --verbose --watchAll"
   },
-  "keywords": ["codec", "io-ts", "typescript", "types", "parser"],
-
+  "keywords": [
+    "codec",
+    "io-ts",
+    "typescript",
+    "types",
+    "parser"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/velocityzen/io-ts-parser-types.git"
@@ -49,8 +54,11 @@
     "release-it": "^17.0.0",
     "rimraf": "^5.0.0",
     "rollup": "^4.8.0",
-    "rollup-plugin-node-externals": "^6.0.0",
+    "rollup-plugin-node-externals": "^7.0.0",
     "ts-jest": "^29.0.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "decimal.js": "^10.4.3"
   }
 }

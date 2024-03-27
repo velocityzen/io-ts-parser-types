@@ -3,6 +3,8 @@ import {
   DecimalFromPercentString,
   floatFrom,
   integerFrom,
+  decimalFrom,
+  decodeEncodeOrUndefined,
 } from "../lib";
 
 describe("number", () => {
@@ -59,5 +61,19 @@ describe("number", () => {
     expect(DecimalFromPercentString.encode(0)).toEqual(0);
     expect(DecimalFromPercentString.encode(0.1)).toEqual(0.1);
     expect(DecimalFromPercentString.encode(1)).toEqual(1);
+  });
+
+  test("decimalFrom", () => {
+    const Money = decimalFrom({ decimals: 2 });
+
+    expect(decodeEncodeOrUndefined(Money, 0)).toBeUndefined();
+    expect(decodeEncodeOrUndefined(Money, "1.123")).toBeUndefined();
+
+    expect(decodeEncodeOrUndefined(Money, "0.1")).toEqual("0.1");
+    expect(decodeEncodeOrUndefined(Money, "0.11")).toEqual("0.11");
+    expect(decodeEncodeOrUndefined(Money, "1.1")).toEqual("1.1");
+    expect(decodeEncodeOrUndefined(Money, "12345678.12")).toEqual(
+      "12345678.12",
+    );
   });
 });

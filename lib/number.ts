@@ -1,31 +1,31 @@
-import { Chain } from "fp-ts/Either";
+import Decimal from "decimal.js";
+import * as E from "fp-ts/Either";
+import { flow, pipe } from "fp-ts/function";
 import * as t from "io-ts";
 
-enum NumberAsStringError {
-  NoMatch,
-  NoGroup,
-}
+function getNumberAsString(c: t.Context, regexp?: RegExp) {
+  return (str: string): t.Validation<string> => {
+    const strTrimmed = str.trim();
 
-function getNumberAsString(
-  str: string,
-  regexp?: RegExp,
-): NumberAsStringError | string {
-  const strTrimmed = str.trim();
+    if (regexp) {
+      const match = strTrimmed.match(regexp);
+      if (!match) {
+        return t.failure(str, c, "regular expression did not find a match");
+      }
 
-  if (regexp) {
-    const match = strTrimmed.match(regexp);
-    if (!match) {
-      return NumberAsStringError.NoMatch;
+      if (typeof match[1] === "undefined") {
+        return t.failure(
+          str,
+          c,
+          "no capturing group present in the regular expression",
+        );
+      }
+
+      return t.success(match[1].replaceAll(",", ""));
     }
 
-    if (typeof match[1] === "undefined") {
-      return NumberAsStringError.NoGroup;
-    }
-
-    return match[1].replaceAll(",", "");
-  }
-
-  return strTrimmed.replaceAll(",", "");
+    return t.success(strTrimmed.replaceAll(",", ""));
+  };
 }
 
 export interface NumberFromOptions {
@@ -35,73 +35,111 @@ export interface NumberFromOptions {
 
 /**
  *  generic codec creation function for integer values
- *  - regexp - optional, RegExp, matches string and returns **first** group as a number, ignores commas as a thousand separator
- *  - name - optional, name of the codec
+ *  @param {RegExp} [regexp] - optional, RegExp, matches string and returns **first** group as a number, ignores commas as a thousand separator
+ *  @param {string} [name] - optional, name of the codec
  **/
 export function integerFrom(options?: NumberFromOptions) {
   return new t.Type<number, number, unknown>(
     options?.name ?? "IntegerFromString",
     t.Int.is,
     (u, c) =>
-      Chain.chain(t.string.validate(u, c), (s) => {
-        const str = getNumberAsString(s, options?.regexp);
+      pipe(
+        t.string.validate(u, c),
+        E.flatMap(getNumberAsString(c, options?.regexp)),
+        E.flatMap((str) =>
+          str.includes(".")
+            ? t.failure<string>(str, c, "cannot parse to an integer")
+            : t.success(str),
+        ),
+        E.flatMap((str) => {
+          const n = parseInt(str, 10);
+          return Number.isNaN(n)
+            ? t.failure(u, c, "cannot parse to an integer")
+            : t.success(n);
+        }),
+      ),
 
-        if (str === NumberAsStringError.NoMatch) {
-          return t.failure(u, c, "regular expression did not find a match");
-        }
-
-        if (str === NumberAsStringError.NoGroup) {
-          return t.failure(
-            u,
-            c,
-            "no capturing group present in the regular expression",
-          );
-        }
-
-        if (str.includes(".")) {
-          return t.failure(u, c, "cannot parse to an integer");
-        }
-
-        const n = parseInt(str, 10);
-        return Number.isNaN(n)
-          ? t.failure(u, c, "cannot parse to an integer")
-          : t.success(n);
-      }),
     t.identity,
   );
 }
 
 /**
  *  generic codec creation function for float values
- *  - regexp - optional, RegExp, matches string and returns **first** group as a number, ignores commas as a thousand separator
- *  - name - optional, name of the codec
+ *  @param {RegExp} [regexp] - optional, RegExp, matches string and returns **first** group as a number, ignores commas as a thousand separator
+ *  @param {string} [name] - optional, name of the codec
  **/
 export function floatFrom(options?: NumberFromOptions) {
   return new t.Type<number, number, unknown>(
     options?.name ?? "FloatFromString",
     t.Int.is,
     (u, c) =>
-      Chain.chain(t.string.validate(u, c), (s) => {
-        const str = getNumberAsString(s, options?.regexp);
-
-        if (str === NumberAsStringError.NoMatch) {
-          return t.failure(u, c, "regular expression did not find a match");
-        }
-
-        if (str === NumberAsStringError.NoGroup) {
-          return t.failure(
-            u,
-            c,
-            "no capturing group present in the regular expression",
-          );
-        }
-
-        const n = parseFloat(str);
-        return Number.isNaN(n)
-          ? t.failure(u, c, "cannot parse to an integer")
-          : t.success(n);
-      }),
+      pipe(
+        t.string.validate(u, c),
+        E.flatMap(getNumberAsString(c, options?.regexp)),
+        E.flatMap((str) => {
+          const n = parseFloat(str);
+          return Number.isNaN(n)
+            ? t.failure(u, c, "cannot parse to an integer")
+            : t.success(n);
+        }),
+      ),
     t.identity,
+  );
+}
+
+export interface DecimalFromOptions extends Decimal.Config, NumberFromOptions {
+  decimals: number;
+}
+
+/**
+ *  generic codec creation function for decimal values
+ *  @param {intger} decimals - max number of decimal digits to allow
+ *  @param {RegExp} [regexp] - RegExp, matches string and returns **first** group as a number, ignores commas as a thousand separator
+ *  @param {string} [name] - name of the codec
+ *  @param [precision] - The maximum number of significant digits of the result of an operation.
+ *  @param [rounding] - The default rounding mode used when rounding the result of an operation to precision significant digits
+ *  @param [minE] - The negative exponent limit, i.e. the exponent value below which underflow to zero occurs.
+ *  @param [maxE] - The positive exponent limit, i.e. the exponent value above which overflow to Infinity occurs.
+ *  @param [toExpNeg] - The negative exponent value at and below which toString returns exponential notation.
+ *  @param [toExpPos] - The positive exponent value at and above which toString returns exponential notation.
+ *  @param [modulo] - The modulo mode used when calculating the modulus: a mod n.
+ *  @param [crypto] - The value that determines whether cryptographically-secure pseudo-random number generation is used.
+ *  for more info http://mikemcl.github.io/decimal.js/#constructor-properties
+ **/
+export function decimalFrom(options: DecimalFromOptions) {
+  const D = Decimal.clone(options);
+
+  const toDecimal = E.tryCatchK((n: Decimal.Value) => {
+    const decimal = new D(n);
+    const decimals = decimal.decimalPlaces();
+    if (decimals > options.decimals) {
+      throw new Error(
+        `Expected less than ${options.decimals} decimals but received ${decimals}`,
+      );
+    }
+
+    return decimal;
+  }, E.toError);
+
+  function is(n: unknown): n is Decimal {
+    return n instanceof D;
+  }
+
+  return new t.Type<Decimal, string, unknown>(
+    options.name ?? "DecimalFromString",
+    is,
+    (u, c) =>
+      pipe(
+        t.string.validate(u, c),
+        E.flatMap(getNumberAsString(c, options.regexp)),
+        E.flatMap(
+          flow(
+            toDecimal,
+            E.match((e) => t.failure<Decimal>(u, c, e.message), t.success),
+          ),
+        ),
+      ),
+    (n) => n.toSignificantDigits().valueOf(),
   );
 }
 
@@ -111,7 +149,11 @@ export function floatFrom(options?: NumberFromOptions) {
 export const ZeroFromNull = new t.Type<number, number, unknown>(
   "ZeroFromNull",
   t.number.is,
-  (u, c) => Chain.chain(t.null.validate(u, c), () => t.success(0)),
+  (u, c) =>
+    pipe(
+      t.null.validate(u, c),
+      E.flatMap(() => t.success(0)),
+    ),
   t.identity,
 );
 
@@ -123,19 +165,24 @@ export const DecimalFromPercentString = new t.Type<number, number, unknown>(
   "DecimalFromPercentString",
   t.number.is,
   (u, c) =>
-    Chain.chain(t.string.validate(u, c), (s: string) => {
-      if (!s.trim().match(/^[^%]+%$/)) {
-        return t.failure(
-          u,
-          c,
-          `${s} should contain a single trailing % character`,
-        );
-      }
+    pipe(
+      t.string.validate(u, c),
+      E.flatMap((str) =>
+        str.trim().match(/^[^%]+%$/)
+          ? t.success(str)
+          : t.failure<string>(
+              u,
+              c,
+              `${str} should contain a single trailing % character`,
+            ),
+      ),
+      E.flatMap((str) => {
+        const n = parseFloat(str);
+        return Number.isNaN(n)
+          ? t.failure(u, c, `cannot parse ${str} to a number`)
+          : t.success(n / 100);
+      }),
+    ),
 
-      const n = parseFloat(s);
-      return Number.isNaN(n)
-        ? t.failure(u, c, `cannot parse ${s} to a number`)
-        : t.success(n / 100);
-    }),
   t.identity,
 );

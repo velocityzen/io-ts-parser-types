@@ -1,3 +1,5 @@
+export { default as Decimal } from "decimal.js";
+
 export * from "./boolean";
 export * from "./codecTypeFromString";
 export * from "./decode";
