@@ -1,545 +1,512 @@
-import {
-  InterfaceType,
-  TypeOf,
-  OutputOf,
-  InputOf,
-  Type,
-  Mixed,
-  Props,
-} from "io-ts";
-
-type Position = number[];
-
-export type FromStringSchema<P> = Record<keyof P, Position>;
-
-export interface TypeDefinition<P> {
-  schema: FromStringSchema<P>;
-  props: Props;
-}
-
-export type PropsFromString = Record<
-  string,
-  {
-    position: Position;
-    codec: Mixed;
-  }
->;
-
-export type TypeCFromString<P extends PropsFromString> = InterfaceType<
-  P,
-  { [K in keyof P]: TypeOf<P[K]["codec"]> },
-  { [K in keyof P]: OutputOf<P[K]["codec"]> }
-> & { readonly schema: FromStringSchema<P> };
-
-export type CodecTypeCFromString<P extends PropsFromString> = InterfaceType<
-  P,
-  { [K in keyof P]: TypeOf<P[K]["codec"]> },
-  string
-> & { readonly schema: FromStringSchema<P> };
+import * as t from "io-ts";
 
 // matchPartial
 
 export type MatchPartialC<
-  P extends [Mixed, Mixed][],
+  P extends [t.Mixed, t.Mixed][],
   A,
   O = A,
   I = unknown,
 > = P extends { lenght: 1 }
-  ? Type<A & TypeOf<P[0][1]>, O & OutputOf<P[0][1]>, I & InputOf<P[0][1]>>
+  ? t.Type<
+      A & t.TypeOf<P[0][1]>,
+      O & t.OutputOf<P[0][1]>,
+      I & t.InputOf<P[0][1]>
+    >
   : P extends { lenght: 2 }
-    ? Type<
-        A & (TypeOf<P[0][1]> | TypeOf<P[1][1]>),
-        O & (OutputOf<P[0][1]> | OutputOf<P[1][1]>),
-        I & (InputOf<P[0][1]> | InputOf<P[1][1]>)
+    ? t.Type<
+        A & (t.TypeOf<P[0][1]> | t.TypeOf<P[1][1]>),
+        O & (t.OutputOf<P[0][1]> | t.OutputOf<P[1][1]>),
+        I & (t.InputOf<P[0][1]> | t.InputOf<P[1][1]>)
       >
     : P extends { lenght: 3 }
-      ? Type<
-          A & (TypeOf<P[0][1]> | TypeOf<P[1][1]> | TypeOf<P[2][1]>),
-          O & (OutputOf<P[0][1]> | OutputOf<P[1][1]> | OutputOf<P[2][1]>),
-          I & (InputOf<P[0][1]> | InputOf<P[1][1]> | InputOf<P[2][1]>)
+      ? t.Type<
+          A & (t.TypeOf<P[0][1]> | t.TypeOf<P[1][1]> | t.TypeOf<P[2][1]>),
+          O & (t.OutputOf<P[0][1]> | t.OutputOf<P[1][1]> | t.OutputOf<P[2][1]>),
+          I & (t.InputOf<P[0][1]> | t.InputOf<P[1][1]> | t.InputOf<P[2][1]>)
         >
       : P extends { lenght: 4 }
-        ? Type<
+        ? t.Type<
             A &
               (
-                | TypeOf<P[0][1]>
-                | TypeOf<P[1][1]>
-                | TypeOf<P[2][1]>
-                | TypeOf<P[3][1]>
+                | t.TypeOf<P[0][1]>
+                | t.TypeOf<P[1][1]>
+                | t.TypeOf<P[2][1]>
+                | t.TypeOf<P[3][1]>
               ),
             O &
               (
-                | OutputOf<P[0][1]>
-                | OutputOf<P[1][1]>
-                | OutputOf<P[2][1]>
-                | OutputOf<P[3][1]>
+                | t.OutputOf<P[0][1]>
+                | t.OutputOf<P[1][1]>
+                | t.OutputOf<P[2][1]>
+                | t.OutputOf<P[3][1]>
               ),
             I &
               (
-                | InputOf<P[0][1]>
-                | InputOf<P[1][1]>
-                | InputOf<P[2][1]>
-                | InputOf<P[3][1]>
+                | t.InputOf<P[0][1]>
+                | t.InputOf<P[1][1]>
+                | t.InputOf<P[2][1]>
+                | t.InputOf<P[3][1]>
               )
           >
         : P extends { lenght: 5 }
-          ? Type<
+          ? t.Type<
               A &
                 (
-                  | TypeOf<P[0][1]>
-                  | TypeOf<P[1][1]>
-                  | TypeOf<P[2][1]>
-                  | TypeOf<P[3][1]>
-                  | TypeOf<P[4][1]>
+                  | t.TypeOf<P[0][1]>
+                  | t.TypeOf<P[1][1]>
+                  | t.TypeOf<P[2][1]>
+                  | t.TypeOf<P[3][1]>
+                  | t.TypeOf<P[4][1]>
                 ),
               O &
                 (
-                  | OutputOf<P[0][1]>
-                  | OutputOf<P[1][1]>
-                  | OutputOf<P[2][1]>
-                  | OutputOf<P[3][1]>
-                  | OutputOf<P[4][1]>
+                  | t.OutputOf<P[0][1]>
+                  | t.OutputOf<P[1][1]>
+                  | t.OutputOf<P[2][1]>
+                  | t.OutputOf<P[3][1]>
+                  | t.OutputOf<P[4][1]>
                 ),
               I &
                 (
-                  | InputOf<P[0][1]>
-                  | InputOf<P[1][1]>
-                  | InputOf<P[2][1]>
-                  | InputOf<P[3][1]>
-                  | InputOf<P[4][1]>
+                  | t.InputOf<P[0][1]>
+                  | t.InputOf<P[1][1]>
+                  | t.InputOf<P[2][1]>
+                  | t.InputOf<P[3][1]>
+                  | t.InputOf<P[4][1]>
                 )
             >
           : P extends { lenght: 6 }
-            ? Type<
+            ? t.Type<
                 A &
                   (
-                    | TypeOf<P[0][1]>
-                    | TypeOf<P[1][1]>
-                    | TypeOf<P[2][1]>
-                    | TypeOf<P[3][1]>
-                    | TypeOf<P[4][1]>
-                    | TypeOf<P[5][1]>
+                    | t.TypeOf<P[0][1]>
+                    | t.TypeOf<P[1][1]>
+                    | t.TypeOf<P[2][1]>
+                    | t.TypeOf<P[3][1]>
+                    | t.TypeOf<P[4][1]>
+                    | t.TypeOf<P[5][1]>
                   ),
                 O &
                   (
-                    | OutputOf<P[0][1]>
-                    | OutputOf<P[1][1]>
-                    | OutputOf<P[2][1]>
-                    | OutputOf<P[3][1]>
-                    | OutputOf<P[4][1]>
-                    | OutputOf<P[5][1]>
+                    | t.OutputOf<P[0][1]>
+                    | t.OutputOf<P[1][1]>
+                    | t.OutputOf<P[2][1]>
+                    | t.OutputOf<P[3][1]>
+                    | t.OutputOf<P[4][1]>
+                    | t.OutputOf<P[5][1]>
                   ),
                 I &
                   (
-                    | InputOf<P[0][1]>
-                    | InputOf<P[1][1]>
-                    | InputOf<P[2][1]>
-                    | InputOf<P[3][1]>
-                    | InputOf<P[4][1]>
-                    | InputOf<P[5][1]>
+                    | t.InputOf<P[0][1]>
+                    | t.InputOf<P[1][1]>
+                    | t.InputOf<P[2][1]>
+                    | t.InputOf<P[3][1]>
+                    | t.InputOf<P[4][1]>
+                    | t.InputOf<P[5][1]>
                   )
               >
             : P extends { lenght: 7 }
-              ? Type<
+              ? t.Type<
                   A &
                     (
-                      | TypeOf<P[0][1]>
-                      | TypeOf<P[1][1]>
-                      | TypeOf<P[2][1]>
-                      | TypeOf<P[3][1]>
-                      | TypeOf<P[4][1]>
-                      | TypeOf<P[5][1]>
-                      | TypeOf<P[6][1]>
+                      | t.TypeOf<P[0][1]>
+                      | t.TypeOf<P[1][1]>
+                      | t.TypeOf<P[2][1]>
+                      | t.TypeOf<P[3][1]>
+                      | t.TypeOf<P[4][1]>
+                      | t.TypeOf<P[5][1]>
+                      | t.TypeOf<P[6][1]>
                     ),
                   O &
                     (
-                      | OutputOf<P[0][1]>
-                      | OutputOf<P[1][1]>
-                      | OutputOf<P[2][1]>
-                      | OutputOf<P[3][1]>
-                      | OutputOf<P[4][1]>
-                      | OutputOf<P[5][1]>
-                      | OutputOf<P[6][1]>
+                      | t.OutputOf<P[0][1]>
+                      | t.OutputOf<P[1][1]>
+                      | t.OutputOf<P[2][1]>
+                      | t.OutputOf<P[3][1]>
+                      | t.OutputOf<P[4][1]>
+                      | t.OutputOf<P[5][1]>
+                      | t.OutputOf<P[6][1]>
                     ),
                   I &
                     (
-                      | InputOf<P[0][1]>
-                      | InputOf<P[1][1]>
-                      | InputOf<P[2][1]>
-                      | InputOf<P[3][1]>
-                      | InputOf<P[4][1]>
-                      | InputOf<P[5][1]>
-                      | InputOf<P[6][1]>
+                      | t.InputOf<P[0][1]>
+                      | t.InputOf<P[1][1]>
+                      | t.InputOf<P[2][1]>
+                      | t.InputOf<P[3][1]>
+                      | t.InputOf<P[4][1]>
+                      | t.InputOf<P[5][1]>
+                      | t.InputOf<P[6][1]>
                     )
                 >
               : P extends { lenght: 8 }
-                ? Type<
+                ? t.Type<
                     A &
                       (
-                        | TypeOf<P[0][1]>
-                        | TypeOf<P[1][1]>
-                        | TypeOf<P[2][1]>
-                        | TypeOf<P[3][1]>
-                        | TypeOf<P[4][1]>
-                        | TypeOf<P[5][1]>
-                        | TypeOf<P[6][1]>
-                        | TypeOf<P[7][1]>
+                        | t.TypeOf<P[0][1]>
+                        | t.TypeOf<P[1][1]>
+                        | t.TypeOf<P[2][1]>
+                        | t.TypeOf<P[3][1]>
+                        | t.TypeOf<P[4][1]>
+                        | t.TypeOf<P[5][1]>
+                        | t.TypeOf<P[6][1]>
+                        | t.TypeOf<P[7][1]>
                       ),
                     O &
                       (
-                        | OutputOf<P[0][1]>
-                        | OutputOf<P[1][1]>
-                        | OutputOf<P[2][1]>
-                        | OutputOf<P[3][1]>
-                        | OutputOf<P[4][1]>
-                        | OutputOf<P[5][1]>
-                        | OutputOf<P[6][1]>
-                        | OutputOf<P[7][1]>
+                        | t.OutputOf<P[0][1]>
+                        | t.OutputOf<P[1][1]>
+                        | t.OutputOf<P[2][1]>
+                        | t.OutputOf<P[3][1]>
+                        | t.OutputOf<P[4][1]>
+                        | t.OutputOf<P[5][1]>
+                        | t.OutputOf<P[6][1]>
+                        | t.OutputOf<P[7][1]>
                       ),
                     I &
                       (
-                        | InputOf<P[0][1]>
-                        | InputOf<P[1][1]>
-                        | InputOf<P[2][1]>
-                        | InputOf<P[3][1]>
-                        | InputOf<P[4][1]>
-                        | InputOf<P[5][1]>
-                        | InputOf<P[6][1]>
-                        | InputOf<P[7][1]>
+                        | t.InputOf<P[0][1]>
+                        | t.InputOf<P[1][1]>
+                        | t.InputOf<P[2][1]>
+                        | t.InputOf<P[3][1]>
+                        | t.InputOf<P[4][1]>
+                        | t.InputOf<P[5][1]>
+                        | t.InputOf<P[6][1]>
+                        | t.InputOf<P[7][1]>
                       )
                   >
                 : P extends { lenght: 9 }
-                  ? Type<
+                  ? t.Type<
                       A &
                         (
-                          | TypeOf<P[0][1]>
-                          | TypeOf<P[1][1]>
-                          | TypeOf<P[2][1]>
-                          | TypeOf<P[3][1]>
-                          | TypeOf<P[4][1]>
-                          | TypeOf<P[5][1]>
-                          | TypeOf<P[6][1]>
-                          | TypeOf<P[7][1]>
-                          | TypeOf<P[8][1]>
+                          | t.TypeOf<P[0][1]>
+                          | t.TypeOf<P[1][1]>
+                          | t.TypeOf<P[2][1]>
+                          | t.TypeOf<P[3][1]>
+                          | t.TypeOf<P[4][1]>
+                          | t.TypeOf<P[5][1]>
+                          | t.TypeOf<P[6][1]>
+                          | t.TypeOf<P[7][1]>
+                          | t.TypeOf<P[8][1]>
                         ),
                       O &
                         (
-                          | OutputOf<P[0][1]>
-                          | OutputOf<P[1][1]>
-                          | OutputOf<P[2][1]>
-                          | OutputOf<P[3][1]>
-                          | OutputOf<P[4][1]>
-                          | OutputOf<P[5][1]>
-                          | OutputOf<P[6][1]>
-                          | OutputOf<P[7][1]>
-                          | OutputOf<P[8][1]>
+                          | t.OutputOf<P[0][1]>
+                          | t.OutputOf<P[1][1]>
+                          | t.OutputOf<P[2][1]>
+                          | t.OutputOf<P[3][1]>
+                          | t.OutputOf<P[4][1]>
+                          | t.OutputOf<P[5][1]>
+                          | t.OutputOf<P[6][1]>
+                          | t.OutputOf<P[7][1]>
+                          | t.OutputOf<P[8][1]>
                         ),
                       I &
                         (
-                          | InputOf<P[0][1]>
-                          | InputOf<P[1][1]>
-                          | InputOf<P[2][1]>
-                          | InputOf<P[3][1]>
-                          | InputOf<P[4][1]>
-                          | InputOf<P[5][1]>
-                          | InputOf<P[6][1]>
-                          | InputOf<P[7][1]>
-                          | InputOf<P[8][1]>
+                          | t.InputOf<P[0][1]>
+                          | t.InputOf<P[1][1]>
+                          | t.InputOf<P[2][1]>
+                          | t.InputOf<P[3][1]>
+                          | t.InputOf<P[4][1]>
+                          | t.InputOf<P[5][1]>
+                          | t.InputOf<P[6][1]>
+                          | t.InputOf<P[7][1]>
+                          | t.InputOf<P[8][1]>
                         )
                     >
                   : P extends { lenght: 10 }
-                    ? Type<
+                    ? t.Type<
                         A &
                           (
-                            | TypeOf<P[0][1]>
-                            | TypeOf<P[1][1]>
-                            | TypeOf<P[2][1]>
-                            | TypeOf<P[3][1]>
-                            | TypeOf<P[4][1]>
-                            | TypeOf<P[5][1]>
-                            | TypeOf<P[6][1]>
-                            | TypeOf<P[7][1]>
-                            | TypeOf<P[8][1]>
-                            | TypeOf<P[9][1]>
+                            | t.TypeOf<P[0][1]>
+                            | t.TypeOf<P[1][1]>
+                            | t.TypeOf<P[2][1]>
+                            | t.TypeOf<P[3][1]>
+                            | t.TypeOf<P[4][1]>
+                            | t.TypeOf<P[5][1]>
+                            | t.TypeOf<P[6][1]>
+                            | t.TypeOf<P[7][1]>
+                            | t.TypeOf<P[8][1]>
+                            | t.TypeOf<P[9][1]>
                           ),
                         O &
                           (
-                            | OutputOf<P[0][1]>
-                            | OutputOf<P[1][1]>
-                            | OutputOf<P[2][1]>
-                            | OutputOf<P[3][1]>
-                            | OutputOf<P[4][1]>
-                            | OutputOf<P[5][1]>
-                            | OutputOf<P[6][1]>
-                            | OutputOf<P[7][1]>
-                            | OutputOf<P[8][1]>
-                            | OutputOf<P[9][1]>
+                            | t.OutputOf<P[0][1]>
+                            | t.OutputOf<P[1][1]>
+                            | t.OutputOf<P[2][1]>
+                            | t.OutputOf<P[3][1]>
+                            | t.OutputOf<P[4][1]>
+                            | t.OutputOf<P[5][1]>
+                            | t.OutputOf<P[6][1]>
+                            | t.OutputOf<P[7][1]>
+                            | t.OutputOf<P[8][1]>
+                            | t.OutputOf<P[9][1]>
                           ),
                         I &
                           (
-                            | InputOf<P[0][1]>
-                            | InputOf<P[1][1]>
-                            | InputOf<P[2][1]>
-                            | InputOf<P[3][1]>
-                            | InputOf<P[4][1]>
-                            | InputOf<P[5][1]>
-                            | InputOf<P[6][1]>
-                            | InputOf<P[7][1]>
-                            | InputOf<P[8][1]>
-                            | InputOf<P[9][1]>
+                            | t.InputOf<P[0][1]>
+                            | t.InputOf<P[1][1]>
+                            | t.InputOf<P[2][1]>
+                            | t.InputOf<P[3][1]>
+                            | t.InputOf<P[4][1]>
+                            | t.InputOf<P[5][1]>
+                            | t.InputOf<P[6][1]>
+                            | t.InputOf<P[7][1]>
+                            | t.InputOf<P[8][1]>
+                            | t.InputOf<P[9][1]>
                           )
                       >
                     : P extends { lenght: 11 }
-                      ? Type<
+                      ? t.Type<
                           A &
                             (
-                              | TypeOf<P[0][1]>
-                              | TypeOf<P[1][1]>
-                              | TypeOf<P[2][1]>
-                              | TypeOf<P[3][1]>
-                              | TypeOf<P[4][1]>
-                              | TypeOf<P[5][1]>
-                              | TypeOf<P[6][1]>
-                              | TypeOf<P[7][1]>
-                              | TypeOf<P[8][1]>
-                              | TypeOf<P[9][1]>
-                              | TypeOf<P[10][1]>
+                              | t.TypeOf<P[0][1]>
+                              | t.TypeOf<P[1][1]>
+                              | t.TypeOf<P[2][1]>
+                              | t.TypeOf<P[3][1]>
+                              | t.TypeOf<P[4][1]>
+                              | t.TypeOf<P[5][1]>
+                              | t.TypeOf<P[6][1]>
+                              | t.TypeOf<P[7][1]>
+                              | t.TypeOf<P[8][1]>
+                              | t.TypeOf<P[9][1]>
+                              | t.TypeOf<P[10][1]>
                             ),
                           O &
                             (
-                              | OutputOf<P[0][1]>
-                              | OutputOf<P[1][1]>
-                              | OutputOf<P[2][1]>
-                              | OutputOf<P[3][1]>
-                              | OutputOf<P[4][1]>
-                              | OutputOf<P[5][1]>
-                              | OutputOf<P[6][1]>
-                              | OutputOf<P[7][1]>
-                              | OutputOf<P[8][1]>
-                              | OutputOf<P[9][1]>
-                              | OutputOf<P[10][1]>
+                              | t.OutputOf<P[0][1]>
+                              | t.OutputOf<P[1][1]>
+                              | t.OutputOf<P[2][1]>
+                              | t.OutputOf<P[3][1]>
+                              | t.OutputOf<P[4][1]>
+                              | t.OutputOf<P[5][1]>
+                              | t.OutputOf<P[6][1]>
+                              | t.OutputOf<P[7][1]>
+                              | t.OutputOf<P[8][1]>
+                              | t.OutputOf<P[9][1]>
+                              | t.OutputOf<P[10][1]>
                             ),
                           I &
                             (
-                              | InputOf<P[0][1]>
-                              | InputOf<P[1][1]>
-                              | InputOf<P[2][1]>
-                              | InputOf<P[3][1]>
-                              | InputOf<P[4][1]>
-                              | InputOf<P[5][1]>
-                              | InputOf<P[6][1]>
-                              | InputOf<P[7][1]>
-                              | InputOf<P[8][1]>
-                              | InputOf<P[9][1]>
-                              | InputOf<P[10][1]>
+                              | t.InputOf<P[0][1]>
+                              | t.InputOf<P[1][1]>
+                              | t.InputOf<P[2][1]>
+                              | t.InputOf<P[3][1]>
+                              | t.InputOf<P[4][1]>
+                              | t.InputOf<P[5][1]>
+                              | t.InputOf<P[6][1]>
+                              | t.InputOf<P[7][1]>
+                              | t.InputOf<P[8][1]>
+                              | t.InputOf<P[9][1]>
+                              | t.InputOf<P[10][1]>
                             )
                         >
                       : P extends { lenght: 12 }
-                        ? Type<
+                        ? t.Type<
                             A &
                               (
-                                | TypeOf<P[0][1]>
-                                | TypeOf<P[1][1]>
-                                | TypeOf<P[2][1]>
-                                | TypeOf<P[3][1]>
-                                | TypeOf<P[4][1]>
-                                | TypeOf<P[5][1]>
-                                | TypeOf<P[6][1]>
-                                | TypeOf<P[7][1]>
-                                | TypeOf<P[8][1]>
-                                | TypeOf<P[9][1]>
-                                | TypeOf<P[10][1]>
-                                | TypeOf<P[11][1]>
+                                | t.TypeOf<P[0][1]>
+                                | t.TypeOf<P[1][1]>
+                                | t.TypeOf<P[2][1]>
+                                | t.TypeOf<P[3][1]>
+                                | t.TypeOf<P[4][1]>
+                                | t.TypeOf<P[5][1]>
+                                | t.TypeOf<P[6][1]>
+                                | t.TypeOf<P[7][1]>
+                                | t.TypeOf<P[8][1]>
+                                | t.TypeOf<P[9][1]>
+                                | t.TypeOf<P[10][1]>
+                                | t.TypeOf<P[11][1]>
                               ),
                             O &
                               (
-                                | OutputOf<P[0][1]>
-                                | OutputOf<P[1][1]>
-                                | OutputOf<P[2][1]>
-                                | OutputOf<P[3][1]>
-                                | OutputOf<P[4][1]>
-                                | OutputOf<P[5][1]>
-                                | OutputOf<P[6][1]>
-                                | OutputOf<P[7][1]>
-                                | OutputOf<P[8][1]>
-                                | OutputOf<P[9][1]>
-                                | OutputOf<P[10][1]>
-                                | OutputOf<P[11][1]>
+                                | t.OutputOf<P[0][1]>
+                                | t.OutputOf<P[1][1]>
+                                | t.OutputOf<P[2][1]>
+                                | t.OutputOf<P[3][1]>
+                                | t.OutputOf<P[4][1]>
+                                | t.OutputOf<P[5][1]>
+                                | t.OutputOf<P[6][1]>
+                                | t.OutputOf<P[7][1]>
+                                | t.OutputOf<P[8][1]>
+                                | t.OutputOf<P[9][1]>
+                                | t.OutputOf<P[10][1]>
+                                | t.OutputOf<P[11][1]>
                               ),
                             I &
                               (
-                                | InputOf<P[0][1]>
-                                | InputOf<P[1][1]>
-                                | InputOf<P[2][1]>
-                                | InputOf<P[3][1]>
-                                | InputOf<P[4][1]>
-                                | InputOf<P[5][1]>
-                                | InputOf<P[6][1]>
-                                | InputOf<P[7][1]>
-                                | InputOf<P[8][1]>
-                                | InputOf<P[9][1]>
-                                | InputOf<P[10][1]>
-                                | InputOf<P[11][1]>
+                                | t.InputOf<P[0][1]>
+                                | t.InputOf<P[1][1]>
+                                | t.InputOf<P[2][1]>
+                                | t.InputOf<P[3][1]>
+                                | t.InputOf<P[4][1]>
+                                | t.InputOf<P[5][1]>
+                                | t.InputOf<P[6][1]>
+                                | t.InputOf<P[7][1]>
+                                | t.InputOf<P[8][1]>
+                                | t.InputOf<P[9][1]>
+                                | t.InputOf<P[10][1]>
+                                | t.InputOf<P[11][1]>
                               )
                           >
                         : P extends { lenght: 13 }
-                          ? Type<
+                          ? t.Type<
                               A &
                                 (
-                                  | TypeOf<P[0][1]>
-                                  | TypeOf<P[1][1]>
-                                  | TypeOf<P[2][1]>
-                                  | TypeOf<P[3][1]>
-                                  | TypeOf<P[4][1]>
-                                  | TypeOf<P[5][1]>
-                                  | TypeOf<P[6][1]>
-                                  | TypeOf<P[7][1]>
-                                  | TypeOf<P[8][1]>
-                                  | TypeOf<P[9][1]>
-                                  | TypeOf<P[10][1]>
-                                  | TypeOf<P[11][1]>
-                                  | TypeOf<P[12][1]>
+                                  | t.TypeOf<P[0][1]>
+                                  | t.TypeOf<P[1][1]>
+                                  | t.TypeOf<P[2][1]>
+                                  | t.TypeOf<P[3][1]>
+                                  | t.TypeOf<P[4][1]>
+                                  | t.TypeOf<P[5][1]>
+                                  | t.TypeOf<P[6][1]>
+                                  | t.TypeOf<P[7][1]>
+                                  | t.TypeOf<P[8][1]>
+                                  | t.TypeOf<P[9][1]>
+                                  | t.TypeOf<P[10][1]>
+                                  | t.TypeOf<P[11][1]>
+                                  | t.TypeOf<P[12][1]>
                                 ),
                               O &
                                 (
-                                  | OutputOf<P[0][1]>
-                                  | OutputOf<P[1][1]>
-                                  | OutputOf<P[2][1]>
-                                  | OutputOf<P[3][1]>
-                                  | OutputOf<P[4][1]>
-                                  | OutputOf<P[5][1]>
-                                  | OutputOf<P[6][1]>
-                                  | OutputOf<P[7][1]>
-                                  | OutputOf<P[8][1]>
-                                  | OutputOf<P[9][1]>
-                                  | OutputOf<P[10][1]>
-                                  | OutputOf<P[11][1]>
-                                  | OutputOf<P[12][1]>
+                                  | t.OutputOf<P[0][1]>
+                                  | t.OutputOf<P[1][1]>
+                                  | t.OutputOf<P[2][1]>
+                                  | t.OutputOf<P[3][1]>
+                                  | t.OutputOf<P[4][1]>
+                                  | t.OutputOf<P[5][1]>
+                                  | t.OutputOf<P[6][1]>
+                                  | t.OutputOf<P[7][1]>
+                                  | t.OutputOf<P[8][1]>
+                                  | t.OutputOf<P[9][1]>
+                                  | t.OutputOf<P[10][1]>
+                                  | t.OutputOf<P[11][1]>
+                                  | t.OutputOf<P[12][1]>
                                 ),
                               I &
                                 (
-                                  | InputOf<P[0][1]>
-                                  | InputOf<P[1][1]>
-                                  | InputOf<P[2][1]>
-                                  | InputOf<P[3][1]>
-                                  | InputOf<P[4][1]>
-                                  | InputOf<P[5][1]>
-                                  | InputOf<P[6][1]>
-                                  | InputOf<P[7][1]>
-                                  | InputOf<P[8][1]>
-                                  | InputOf<P[9][1]>
-                                  | InputOf<P[10][1]>
-                                  | InputOf<P[11][1]>
-                                  | InputOf<P[12][1]>
+                                  | t.InputOf<P[0][1]>
+                                  | t.InputOf<P[1][1]>
+                                  | t.InputOf<P[2][1]>
+                                  | t.InputOf<P[3][1]>
+                                  | t.InputOf<P[4][1]>
+                                  | t.InputOf<P[5][1]>
+                                  | t.InputOf<P[6][1]>
+                                  | t.InputOf<P[7][1]>
+                                  | t.InputOf<P[8][1]>
+                                  | t.InputOf<P[9][1]>
+                                  | t.InputOf<P[10][1]>
+                                  | t.InputOf<P[11][1]>
+                                  | t.InputOf<P[12][1]>
                                 )
                             >
                           : P extends { lenght: 14 }
-                            ? Type<
+                            ? t.Type<
                                 A &
                                   (
-                                    | TypeOf<P[0][1]>
-                                    | TypeOf<P[1][1]>
-                                    | TypeOf<P[2][1]>
-                                    | TypeOf<P[3][1]>
-                                    | TypeOf<P[4][1]>
-                                    | TypeOf<P[5][1]>
-                                    | TypeOf<P[6][1]>
-                                    | TypeOf<P[7][1]>
-                                    | TypeOf<P[8][1]>
-                                    | TypeOf<P[9][1]>
-                                    | TypeOf<P[10][1]>
-                                    | TypeOf<P[11][1]>
-                                    | TypeOf<P[12][1]>
-                                    | TypeOf<P[13][1]>
+                                    | t.TypeOf<P[0][1]>
+                                    | t.TypeOf<P[1][1]>
+                                    | t.TypeOf<P[2][1]>
+                                    | t.TypeOf<P[3][1]>
+                                    | t.TypeOf<P[4][1]>
+                                    | t.TypeOf<P[5][1]>
+                                    | t.TypeOf<P[6][1]>
+                                    | t.TypeOf<P[7][1]>
+                                    | t.TypeOf<P[8][1]>
+                                    | t.TypeOf<P[9][1]>
+                                    | t.TypeOf<P[10][1]>
+                                    | t.TypeOf<P[11][1]>
+                                    | t.TypeOf<P[12][1]>
+                                    | t.TypeOf<P[13][1]>
                                   ),
                                 O &
                                   (
-                                    | OutputOf<P[0][1]>
-                                    | OutputOf<P[1][1]>
-                                    | OutputOf<P[2][1]>
-                                    | OutputOf<P[3][1]>
-                                    | OutputOf<P[4][1]>
-                                    | OutputOf<P[5][1]>
-                                    | OutputOf<P[6][1]>
-                                    | OutputOf<P[7][1]>
-                                    | OutputOf<P[8][1]>
-                                    | OutputOf<P[9][1]>
-                                    | OutputOf<P[10][1]>
-                                    | OutputOf<P[11][1]>
-                                    | OutputOf<P[12][1]>
-                                    | OutputOf<P[13][1]>
+                                    | t.OutputOf<P[0][1]>
+                                    | t.OutputOf<P[1][1]>
+                                    | t.OutputOf<P[2][1]>
+                                    | t.OutputOf<P[3][1]>
+                                    | t.OutputOf<P[4][1]>
+                                    | t.OutputOf<P[5][1]>
+                                    | t.OutputOf<P[6][1]>
+                                    | t.OutputOf<P[7][1]>
+                                    | t.OutputOf<P[8][1]>
+                                    | t.OutputOf<P[9][1]>
+                                    | t.OutputOf<P[10][1]>
+                                    | t.OutputOf<P[11][1]>
+                                    | t.OutputOf<P[12][1]>
+                                    | t.OutputOf<P[13][1]>
                                   ),
                                 I &
                                   (
-                                    | InputOf<P[0][1]>
-                                    | InputOf<P[1][1]>
-                                    | InputOf<P[2][1]>
-                                    | InputOf<P[3][1]>
-                                    | InputOf<P[4][1]>
-                                    | InputOf<P[5][1]>
-                                    | InputOf<P[6][1]>
-                                    | InputOf<P[7][1]>
-                                    | InputOf<P[8][1]>
-                                    | InputOf<P[9][1]>
-                                    | InputOf<P[10][1]>
-                                    | InputOf<P[11][1]>
-                                    | InputOf<P[12][1]>
-                                    | InputOf<P[13][1]>
+                                    | t.InputOf<P[0][1]>
+                                    | t.InputOf<P[1][1]>
+                                    | t.InputOf<P[2][1]>
+                                    | t.InputOf<P[3][1]>
+                                    | t.InputOf<P[4][1]>
+                                    | t.InputOf<P[5][1]>
+                                    | t.InputOf<P[6][1]>
+                                    | t.InputOf<P[7][1]>
+                                    | t.InputOf<P[8][1]>
+                                    | t.InputOf<P[9][1]>
+                                    | t.InputOf<P[10][1]>
+                                    | t.InputOf<P[11][1]>
+                                    | t.InputOf<P[12][1]>
+                                    | t.InputOf<P[13][1]>
                                   )
                               >
-                            : Type<
+                            : t.Type<
                                 A &
                                   (
-                                    | TypeOf<P[0][1]>
-                                    | TypeOf<P[1][1]>
-                                    | TypeOf<P[2][1]>
-                                    | TypeOf<P[3][1]>
-                                    | TypeOf<P[4][1]>
-                                    | TypeOf<P[5][1]>
-                                    | TypeOf<P[6][1]>
-                                    | TypeOf<P[7][1]>
-                                    | TypeOf<P[8][1]>
-                                    | TypeOf<P[9][1]>
-                                    | TypeOf<P[10][1]>
-                                    | TypeOf<P[11][1]>
-                                    | TypeOf<P[12][1]>
-                                    | TypeOf<P[13][1]>
-                                    | TypeOf<P[14][1]>
+                                    | t.TypeOf<P[0][1]>
+                                    | t.TypeOf<P[1][1]>
+                                    | t.TypeOf<P[2][1]>
+                                    | t.TypeOf<P[3][1]>
+                                    | t.TypeOf<P[4][1]>
+                                    | t.TypeOf<P[5][1]>
+                                    | t.TypeOf<P[6][1]>
+                                    | t.TypeOf<P[7][1]>
+                                    | t.TypeOf<P[8][1]>
+                                    | t.TypeOf<P[9][1]>
+                                    | t.TypeOf<P[10][1]>
+                                    | t.TypeOf<P[11][1]>
+                                    | t.TypeOf<P[12][1]>
+                                    | t.TypeOf<P[13][1]>
+                                    | t.TypeOf<P[14][1]>
                                   ),
                                 O &
                                   (
-                                    | OutputOf<P[0][1]>
-                                    | OutputOf<P[1][1]>
-                                    | OutputOf<P[2][1]>
-                                    | OutputOf<P[3][1]>
-                                    | OutputOf<P[4][1]>
-                                    | OutputOf<P[5][1]>
-                                    | OutputOf<P[6][1]>
-                                    | OutputOf<P[7][1]>
-                                    | OutputOf<P[8][1]>
-                                    | OutputOf<P[9][1]>
-                                    | OutputOf<P[10][1]>
-                                    | OutputOf<P[11][1]>
-                                    | OutputOf<P[12][1]>
-                                    | OutputOf<P[13][1]>
-                                    | OutputOf<P[14][1]>
+                                    | t.OutputOf<P[0][1]>
+                                    | t.OutputOf<P[1][1]>
+                                    | t.OutputOf<P[2][1]>
+                                    | t.OutputOf<P[3][1]>
+                                    | t.OutputOf<P[4][1]>
+                                    | t.OutputOf<P[5][1]>
+                                    | t.OutputOf<P[6][1]>
+                                    | t.OutputOf<P[7][1]>
+                                    | t.OutputOf<P[8][1]>
+                                    | t.OutputOf<P[9][1]>
+                                    | t.OutputOf<P[10][1]>
+                                    | t.OutputOf<P[11][1]>
+                                    | t.OutputOf<P[12][1]>
+                                    | t.OutputOf<P[13][1]>
+                                    | t.OutputOf<P[14][1]>
                                   ),
                                 I &
                                   (
-                                    | InputOf<P[0][1]>
-                                    | InputOf<P[1][1]>
-                                    | InputOf<P[2][1]>
-                                    | InputOf<P[3][1]>
-                                    | InputOf<P[4][1]>
-                                    | InputOf<P[5][1]>
-                                    | InputOf<P[6][1]>
-                                    | InputOf<P[7][1]>
-                                    | InputOf<P[8][1]>
-                                    | InputOf<P[9][1]>
-                                    | InputOf<P[10][1]>
-                                    | InputOf<P[11][1]>
-                                    | InputOf<P[12][1]>
-                                    | InputOf<P[13][1]>
-                                    | InputOf<P[14][1]>
+                                    | t.InputOf<P[0][1]>
+                                    | t.InputOf<P[1][1]>
+                                    | t.InputOf<P[2][1]>
+                                    | t.InputOf<P[3][1]>
+                                    | t.InputOf<P[4][1]>
+                                    | t.InputOf<P[5][1]>
+                                    | t.InputOf<P[6][1]>
+                                    | t.InputOf<P[7][1]>
+                                    | t.InputOf<P[8][1]>
+                                    | t.InputOf<P[9][1]>
+                                    | t.InputOf<P[10][1]>
+                                    | t.InputOf<P[11][1]>
+                                    | t.InputOf<P[12][1]>
+                                    | t.InputOf<P[13][1]>
+                                    | t.InputOf<P[14][1]>
                                   )
                               >;

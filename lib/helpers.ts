@@ -1,68 +1,51 @@
-import { isLeft } from "fp-ts/Either";
-import { slice } from "fp-ts/string";
-import { reduce } from "fp-ts/Array";
-import { pipe } from "fp-ts/function";
-import { toEntries } from "fp-ts/Record";
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as R from "fp-ts/lib/Record";
+import * as A from "fp-ts/lib/Array";
+import * as t from "io-ts";
 
 import { Type, UnknownRecord, string } from "io-ts";
 
-import { FromStringSchema } from "./types";
+interface TypeDefinition<P> {
+  schema: Record<string, P>;
+  props: t.Props;
+}
+
+export function getTypeDefinition<
+  /* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters */
+  S extends Record<
+    string,
+    {
+      position: P;
+      codec: t.Mixed;
+    }
+  >,
+  P,
+>(propsSchema: S): TypeDefinition<P> {
+  return pipe(
+    propsSchema,
+    R.toEntries,
+    A.reduce(
+      { schema: {}, props: {} } as TypeDefinition<P>,
+      (defs, [key, { position, codec }]) => {
+        defs.schema[key] = position;
+        defs.props[key] = codec;
+        return defs;
+      },
+    ),
+  );
+}
 
 /**
  * returns value if succeed and undefined otherwise
  **/
 export function decode<I, O>(codec: Type<I, O>, value: unknown): undefined | I {
   const v = codec.decode(value);
-  if (isLeft(v)) {
+  if (E.isLeft(v)) {
     return undefined;
   }
 
   return v.right;
-}
-
-function pad(maxLength: number, fillString = " ", end: boolean) {
-  return end
-    ? (str: string) => str.padStart(maxLength, fillString)
-    : (str: string) => str.padEnd(maxLength, fillString);
-}
-
-export function fromString<P>(
-  str: string,
-  schema: FromStringSchema<P>,
-): unknown {
-  return pipe(
-    schema,
-    toEntries,
-    reduce({} as Record<string, string>, (record, [name, position]) => {
-      const fieldValue = str.substring(position[0], position[1]);
-      record[name] = fieldValue;
-      return record;
-    }),
-  );
-}
-
-export function toString<P>(
-  props: Record<string, string>,
-  schema: FromStringSchema<P>,
-): string {
-  return pipe(
-    schema,
-    toEntries,
-    reduce("", (str, [name, position]) => {
-      const value = props[name] ?? "";
-      const maxLength = position[1] - position[0];
-      const valueString = pipe(
-        String(value),
-        slice(0, maxLength),
-        pad(maxLength, " ", typeof value === "number"),
-      );
-
-      str = str.padEnd(position[0], " ");
-      return (
-        str.substring(0, position[0]) + valueString + str.substring(position[1])
-      );
-    }),
-  );
 }
 
 function mergeStrings(first: string, second: string): string {

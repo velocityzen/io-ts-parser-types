@@ -2,40 +2,50 @@ import { Equal, Expect } from "@type-challenges/utils";
 import { OutputOf, TypeOf } from "io-ts";
 import { BooleanFromString, NumberFromString } from "io-ts-types";
 import { describe, expect, test } from "vitest";
-import { codecTypeFromString, typeFromString } from "../lib";
+import { codecTypeFromSeparatedValues, typeFromSeparatedValues } from "../lib";
 import { decode } from "../lib/helpers";
 
-describe("typeFromString", () => {
+describe("typeFromSeparatedValues", () => {
   test("decode", () => {
-    const codec = typeFromString(
+    const codec = typeFromSeparatedValues(
+      "|",
       {
         prop1: {
-          position: [1, 2],
+          position: 1,
           codec: NumberFromString,
         },
         prop2: {
-          position: [5, 9],
+          position: 0,
           codec: BooleanFromString,
         },
       },
       "TestCodec",
     );
 
-    expect(decode(codec, "12345true78")).toEqual({
-      prop1: 2,
+    type I = TypeOf<typeof codec>;
+    type O = OutputOf<typeof codec>;
+
+    type _Tests = [
+      Expect<Equal<I, { prop1: number; prop2: boolean }>>,
+      Expect<Equal<O, { prop1: string; prop2: string }>>,
+    ];
+
+    expect(decode(codec, "true|78")).toEqual({
+      prop1: 78,
       prop2: true,
     });
   });
 
   test("encode", () => {
-    const codec = typeFromString(
+    const codec = typeFromSeparatedValues(
+      "|",
       {
         prop1: {
-          position: [1, 2],
+          position: 1,
           codec: NumberFromString,
         },
         prop2: {
-          position: [5, 9],
+          position: 0,
           codec: BooleanFromString,
         },
       },
@@ -52,48 +62,19 @@ describe("typeFromString", () => {
       prop2: "true",
     });
   });
-
-  test("types", () => {
-    const prop1 = {
-      position: [1, 2],
-      codec: NumberFromString,
-    };
-
-    const prop2 = {
-      position: [5, 9],
-      codec: BooleanFromString,
-    };
-
-    const _codec = typeFromString(
-      {
-        prop1,
-        prop2,
-      },
-      "TestCodec",
-    );
-
-    type I = TypeOf<typeof _codec>;
-    type O = OutputOf<typeof _codec>;
-
-    type _Tests = [
-      Expect<Equal<I, { prop1: number; prop2: boolean }>>,
-      Expect<Equal<O, { prop1: string; prop2: string }>>,
-    ];
-
-    expect(true).toBe(true);
-  });
 });
 
-describe("codecTypeFromString", () => {
+describe("codecTypeFromSeparatedValues", () => {
   test("decode", () => {
-    const codec = codecTypeFromString(
+    const codec = codecTypeFromSeparatedValues(
+      "|",
       {
         prop1: {
-          position: [1, 2],
+          position: 1,
           codec: NumberFromString,
         },
         prop2: {
-          position: [5, 9],
+          position: 0,
           codec: BooleanFromString,
         },
       },
@@ -108,21 +89,22 @@ describe("codecTypeFromString", () => {
       Expect<Equal<O, string>>,
     ];
 
-    expect(decode(codec, "12345true78")).toEqual({
-      prop1: 2,
+    expect(decode(codec, "true|78")).toEqual({
+      prop1: 78,
       prop2: true,
     });
   });
 
   test("encode", () => {
-    const codec = codecTypeFromString(
+    const codec = codecTypeFromSeparatedValues(
+      "|",
       {
         prop1: {
-          position: [1, 2],
+          position: 1,
           codec: NumberFromString,
         },
         prop2: {
-          position: [5, 9],
+          position: 0,
           codec: BooleanFromString,
         },
       },
@@ -134,6 +116,6 @@ describe("codecTypeFromString", () => {
         prop1: 2,
         prop2: true,
       }),
-    ).toEqual(" 2   true");
+    ).toEqual("true|2");
   });
 });

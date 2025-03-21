@@ -77,6 +77,51 @@ expect(codecTypeC.encode(result)).toEqual(" 2   true");
 
 ---
 
+## typeFromSeparatedValues(separator, schema, name)
+
+- separator: string | RegExp
+
+returns a codec that extracts fields for the the string with values separated by `separator` and returns an object. **encode returns the object with encoded fields**
+
+## codecTypeFromSeparatedValues(separator, schema, name)
+
+- separator: string
+
+returns a codec that extracts fields for the the string with values separated by `separator` and returns an object. **encode returns the string with field values in respective positions**
+
+### Example
+
+```ts
+const schema = {
+  prop1: {
+    position: 1,
+    codec: NumberFromString,
+  },
+  prop2: {
+    position: 0,
+    codec: BooleanFromString,
+  },
+};
+const typeC = typeFromString("|", schema, "string to object");
+const codecTypeC = codecTypeFromString("|", schema, "string to object to string");
+
+const result = {
+  prop1: 2,
+  prop2: true,
+};
+
+expect(decode(typeC, "true|2")).toEqual(result);
+expect(decode(codecTypeC, "true|2")).toEqual(result);
+
+expect(typeC.encode(result)).toEqual({
+  prop1: "2",
+  prop2: "true",
+});
+expect(codecTypeC.encode(result)).toEqual("true|2");
+```
+
+---
+
 ## Number
 
 - **integerFrom(options)** - generic codec creation function for integer values
