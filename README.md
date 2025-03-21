@@ -102,8 +102,8 @@ const schema = {
     codec: BooleanFromString,
   },
 };
-const typeC = typeFromString("|", schema, "string to object");
-const codecTypeC = codecTypeFromString("|", schema, "string to object to string");
+const typeC = typeFromSeparatedValues("|", schema, "string to object");
+const codecTypeC = codecTypeFromSeparatedValues("|", schema, "string to object to string");
 
 const result = {
   prop1: 2,
