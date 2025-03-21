@@ -5,17 +5,12 @@ import { mergeAll } from "./helpers";
 
 import { MatchPartialC } from "./types";
 
-type TypeDefinition = {
+interface TypeDefinition {
   caseCodecs: Mixed[];
   matchCodecs: Mixed[];
-};
+}
 
-export function matchPartial<
-  P extends Array<[Mixed, Mixed]>,
-  A,
-  O = A,
-  I = unknown,
->(
+export function matchPartial<P extends [Mixed, Mixed][], A, O = A, I = unknown>(
   match: Type<A, O, I>,
   cases: P,
   name = `MatchPartial<${match.name}>`,

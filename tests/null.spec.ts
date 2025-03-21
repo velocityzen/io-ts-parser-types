@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import { decodeOrUndefined as decode, nullFrom } from "../lib";
 
 describe("nullFrom", () => {

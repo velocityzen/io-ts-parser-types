@@ -28,21 +28,19 @@ export type PropsFromString = Record<
 export type TypeCFromString<P extends PropsFromString> = InterfaceType<
   P,
   { [K in keyof P]: TypeOf<P[K]["codec"]> },
-  { [K in keyof P]: OutputOf<P[K]["codec"]> },
-  unknown
+  { [K in keyof P]: OutputOf<P[K]["codec"]> }
 > & { readonly schema: FromStringSchema<P> };
 
 export type CodecTypeCFromString<P extends PropsFromString> = InterfaceType<
   P,
   { [K in keyof P]: TypeOf<P[K]["codec"]> },
-  string,
-  unknown
+  string
 > & { readonly schema: FromStringSchema<P> };
 
 // matchPartial
 
 export type MatchPartialC<
-  P extends Array<[Mixed, Mixed]>,
+  P extends [Mixed, Mixed][],
   A,
   O = A,
   I = unknown,

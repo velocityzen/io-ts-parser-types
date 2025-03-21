@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method  */
 import * as E from "fp-ts/Either";
 import { constUndefined, pipe } from "fp-ts/function";
 import * as t from "io-ts";
@@ -6,7 +7,7 @@ import * as t from "io-ts";
  * returns value if succeed or undefined otherwise
  **/
 export function decodeOrUndefined<A, O>(
-  { decode }: t.Type<A, O, unknown>,
+  { decode }: t.Type<A, O>,
   value: unknown,
 ): undefined | A {
   return pipe(value, decode, E.getOrElseW(constUndefined));
@@ -16,7 +17,7 @@ export function decodeOrUndefined<A, O>(
  * returns value if succeed or undefined otherwise
  **/
 export function decodeEncodeOrUndefined<A, O>(
-  { decode, encode }: t.Type<A, O, unknown>,
+  { decode, encode }: t.Type<A, O>,
   value: unknown,
 ): undefined | O {
   return pipe(value, decode, E.map(encode), E.getOrElseW(constUndefined));

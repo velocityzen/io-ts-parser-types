@@ -1,9 +1,9 @@
-import { TypeOf, OutputOf } from "io-ts";
-import { NumberFromString, BooleanFromString } from "io-ts-types";
 import { Equal, Expect } from "@type-challenges/utils";
-
-import { decode } from "../lib/helpers";
+import { OutputOf, TypeOf } from "io-ts";
+import { BooleanFromString, NumberFromString } from "io-ts-types";
+import { describe, expect, test } from "vitest";
 import { typeFromString } from "../lib";
+import { decode } from "../lib/helpers";
 
 describe("typeFromString", () => {
   test("decode", () => {
@@ -64,7 +64,7 @@ describe("typeFromString", () => {
       codec: BooleanFromString,
     };
 
-    const codec = typeFromString(
+    const _codec = typeFromString(
       {
         prop1,
         prop2,
@@ -72,8 +72,8 @@ describe("typeFromString", () => {
       "TestCodec",
     );
 
-    type I = TypeOf<typeof codec>;
-    type O = OutputOf<typeof codec>;
+    type I = TypeOf<typeof _codec>;
+    type O = OutputOf<typeof _codec>;
 
     type _Tests = [
       Expect<Equal<I, { prop1: number; prop2: boolean }>>,

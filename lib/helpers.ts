@@ -11,10 +11,7 @@ import { FromStringSchema } from "./types";
 /**
  * returns value if succeed and undefined otherwise
  **/
-export function decode<I, O>(
-  codec: Type<I, O, unknown>,
-  value: unknown,
-): undefined | I {
+export function decode<I, O>(codec: Type<I, O>, value: unknown): undefined | I {
   const v = codec.decode(value);
   if (isLeft(v)) {
     return undefined;

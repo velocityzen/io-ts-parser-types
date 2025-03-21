@@ -1,6 +1,7 @@
 import { TypeOf, OutputOf, InputOf, type, literal } from "io-ts";
-import { NumberFromString, BooleanFromString } from "io-ts-types";
+import { describe, test, expect } from "vitest";
 import { Equal, Expect } from "@type-challenges/utils";
+import { NumberFromString, BooleanFromString } from "io-ts-types";
 
 import { decode } from "../lib/helpers";
 import { matchPartial, codecTypeFromString } from "../lib";

@@ -99,7 +99,7 @@ function getBooleanFrom(values: BooleanFromOptions) {
  **/
 export function booleanFrom(
   values: BooleanFromOptions,
-): t.Type<boolean, boolean, unknown> {
+): t.Type<boolean, boolean> {
   const { match, description } = getBooleanFrom(values);
 
   return new t.Type<boolean, boolean, unknown>(

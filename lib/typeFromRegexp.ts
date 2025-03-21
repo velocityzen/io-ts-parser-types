@@ -3,7 +3,7 @@ import { Type, string, failure } from "io-ts";
 
 export function typeFromRegexp<A, O>(
   regexp: RegExp,
-  codec: Type<A, O, unknown>,
+  codec: Type<A, O>,
   name = `TypeFromRegexp<${codec.name}>`,
 ) {
   return new Type<A, O, unknown>(

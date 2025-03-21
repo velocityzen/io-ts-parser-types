@@ -168,7 +168,7 @@ export const DecimalFromPercentString = new t.Type<number, number, unknown>(
     pipe(
       t.string.validate(u, c),
       E.flatMap((str) =>
-        str.trim().match(/^[^%]+%$/)
+        /^[^%]+%$/.test(str.trim())
           ? t.success(str)
           : t.failure<string>(
               u,

@@ -1,9 +1,9 @@
-import { TypeOf, OutputOf } from "io-ts";
-import { NumberFromString, BooleanFromString } from "io-ts-types";
-import { Equal, Expect } from "@type-challenges/utils";
-
-import { decode } from "../lib/helpers";
+import { BooleanFromString, NumberFromString } from "io-ts-types";
+import { describe, expect, test } from "vitest";
 import { codecTypeFromString } from "../lib";
+import { decode } from "../lib/helpers";
+import { Expect, Equal } from "@type-challenges/utils";
+import { TypeOf, OutputOf } from "io-ts";
 
 describe("codecTypeFromString", () => {
   test("decode", () => {

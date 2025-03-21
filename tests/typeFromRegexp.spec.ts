@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import * as t from "io-ts";
 import { NumberFromString, BooleanFromString } from "io-ts-types";
 
