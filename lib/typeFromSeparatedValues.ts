@@ -122,10 +122,7 @@ function toStringWith(separator: string, schema: string[]) {
   return (r: Record<string, undefined | string>): string =>
     pipe(
       schema,
-      A.map((key) => {
-        const value = r[key];
-        return value === undefined ? "" : String(value);
-      }),
+      A.map((key) => String(r[key] ?? "")),
       A.intercalate(S.Monoid)(separator),
     );
 }
