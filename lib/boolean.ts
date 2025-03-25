@@ -99,11 +99,12 @@ function getBooleanFrom(values: BooleanFromOptions) {
  **/
 export function booleanFrom(
   values: BooleanFromOptions,
+  name?: string,
 ): t.Type<boolean, boolean> {
   const { match, description } = getBooleanFrom(values);
 
   return new t.Type<boolean, boolean, unknown>(
-    `BooleanFrom (${description})`,
+    name ?? `BooleanFrom (${description})`,
     t.boolean.is,
     (u, c) =>
       pipe(

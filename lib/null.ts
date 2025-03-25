@@ -11,7 +11,7 @@ export interface NullFromOptions {
   caseSensitive?: boolean;
 }
 
-export function nullFrom(options: NullFromOptions) {
+export function nullFrom(options: NullFromOptions, name = "NullFrom") {
   const caseSensitive = options.caseSensitive ?? true;
   const match = caseSensitive
     ? options.match
@@ -19,7 +19,7 @@ export function nullFrom(options: NullFromOptions) {
   const matchTo = new Set(match);
 
   return new t.Type<null, null, unknown>(
-    "NullFrom",
+    name,
     t.null.is,
     (u, c) => {
       if (u === undefined || t.null.is(u)) {
