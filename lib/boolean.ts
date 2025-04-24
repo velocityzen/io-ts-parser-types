@@ -1,10 +1,13 @@
-import { fold, left, right } from "fp-ts/Either";
-import { pipe } from "fp-ts/function";
+import * as O from "fp-ts/lib/Option";
+import * as S from "fp-ts/lib/string";
+import * as E from "fp-ts/lib/Either";
+import { pipe, constant } from "fp-ts/lib/function";
 import * as t from "io-ts";
 
-import { trimIfString } from "./string";
-
-export type BooleanFromOptions = { strict?: boolean } & (
+export type BooleanFromOptions = {
+  strict?: boolean;
+  caseSensitive?: boolean;
+} & (
   | {
       true: unknown;
       false: unknown;
@@ -36,58 +39,76 @@ function hasOnlyTrue(values: BooleanFromOptions): values is {
   return Object.hasOwn(values, "false") && !Object.hasOwn(values, "true");
 }*/
 
-function getBooleanFrom(values: BooleanFromOptions) {
-  if (hasBoth(values)) {
-    const trueNormalized = trimIfString(values.true);
-    const falseNormalized = trimIfString(values.false);
-    const description = `${values.strict ? "Strict " : ""}True: "${String(
+function normalizeValue(caseSensitive = true) {
+  return (a: unknown) =>
+    pipe(
+      a,
+      O.fromPredicate(S.isString),
+      O.map(S.trim),
+      O.map((s) => (caseSensitive ? s : s.toLowerCase())),
+      O.getOrElseW(constant(a)),
+    );
+}
+
+function getBooleanFrom(options: BooleanFromOptions) {
+  const normalize = normalizeValue(options.caseSensitive);
+
+  if (hasBoth(options)) {
+    const trueNormalized = normalize(options.true);
+    const falseNormalized = normalize(options.false);
+
+    const description = `${options.strict ? "Strict " : ""}True: "${String(
       trueNormalized,
     )}" / False: "${String(falseNormalized)}"`;
 
     const match = (u: unknown) => {
-      if (u === trueNormalized) {
-        return right(true);
+      const value = normalize(u);
+
+      if (value === trueNormalized) {
+        return E.right(true);
       }
 
-      if (u === falseNormalized) {
-        return right(false);
+      if (value === falseNormalized) {
+        return E.right(false);
       }
 
-      return left(null);
+      return E.left(null);
     };
 
     return { match, description };
   }
 
-  if (hasOnlyTrue(values)) {
-    const trueNormalized = trimIfString(values.true);
-    const description = `${values.strict ? "Strict " : ""}True: "${String(
+  if (hasOnlyTrue(options)) {
+    const trueNormalized = normalize(options.true);
+    const description = `${options.strict ? "Strict " : ""}True: "${String(
       trueNormalized,
     )}"`;
 
     const match = (u: unknown) => {
-      if (u === trueNormalized) {
-        return right(true);
+      const value = normalize(u);
+      if (value === trueNormalized) {
+        return E.right(true);
       }
 
-      return values.strict ? left(null) : right(false);
+      return options.strict ? E.left(null) : E.right(false);
     };
 
     return { match, description };
   }
 
   // if (hasOnlyFalse(values)) {
-  const falseNormalized = trimIfString(values.false);
-  const description = `${values.strict ? "Strict " : ""}False: "${String(
+  const falseNormalized = normalize(options.false);
+  const description = `${options.strict ? "Strict " : ""}False: "${String(
     falseNormalized,
   )}"`;
 
   const match = (u: unknown) => {
-    if (u === falseNormalized) {
-      return right(false);
+    const value = normalize(u);
+    if (value === falseNormalized) {
+      return E.right(false);
     }
 
-    return values.strict ? left(null) : right(true);
+    return options.strict ? E.left(null) : E.right(true);
   };
 
   return { match, description };
@@ -109,9 +130,8 @@ export function booleanFrom(
     (u, c) =>
       pipe(
         u,
-        trimIfString,
         match,
-        fold(
+        E.match(
           () =>
             t.failure(
               u,

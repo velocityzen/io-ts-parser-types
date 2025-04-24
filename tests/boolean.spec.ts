@@ -43,4 +43,32 @@ describe("boolean", () => {
     expect(decode(BooleanFrom01, "1")).toEqual(undefined);
     expect(decode(BooleanFrom01, "0")).toEqual(undefined);
   });
+
+  test("case sesitive", () => {
+    const BooleanFromYN = booleanFrom({ true: "Y", false: "N" });
+    expect(decode(BooleanFromYN, "Y")).toEqual(true);
+    expect(decode(BooleanFromYN, "y")).toEqual(undefined);
+    expect(decode(BooleanFromYN, " Y  ")).toEqual(true);
+    expect(decode(BooleanFromYN, "N")).toEqual(false);
+    expect(decode(BooleanFromYN, " N   ")).toEqual(false);
+    expect(decode(BooleanFromYN, "n")).toEqual(undefined);
+
+    expect(BooleanFromYN.encode(true)).toEqual(true);
+    expect(BooleanFromYN.encode(false)).toEqual(false);
+  });
+
+  test("case insesitive", () => {
+    const BooleanFromYN = booleanFrom({
+      true: "Y",
+      false: "N",
+      caseSensitive: false,
+    });
+    expect(decode(BooleanFromYN, "Y")).toEqual(true);
+    expect(decode(BooleanFromYN, "y")).toEqual(true);
+    expect(decode(BooleanFromYN, "N")).toEqual(false);
+    expect(decode(BooleanFromYN, "n")).toEqual(false);
+
+    expect(BooleanFromYN.encode(true)).toEqual(true);
+    expect(BooleanFromYN.encode(false)).toEqual(false);
+  });
 });

@@ -135,6 +135,7 @@ expect(codecTypeC.encode(result)).toEqual("true|2");
 ## Boolean
 
 - **booleanFrom(options)** - generic boolean codec creator function.
+  - **caseSensitive** - default: true,
   - **true** - true value, **false** - false value
   - **true** - true value, strict - optional, boolean, if set to true only true value matches
   - **false** - false value, strict - optional, boolean, if set to true only false value matches
